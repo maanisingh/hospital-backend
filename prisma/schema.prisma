@@ -1,0 +1,122 @@
+// Hospital SaaS Database Schema
+// 5 collections with 70 fields total
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Subscription Plans (14 fields)
+model SubscriptionPlan {
+  id              String    @id @default(uuid()) @db.Uuid
+  name            String    @db.VarChar(255)
+  description     String?   @db.Text
+  price           Decimal   @db.Decimal(10, 2)
+  billingCycle    String    @default("monthly") @map("billing_cycle") @db.VarChar(50)
+  maxUsers        Int?      @map("max_users")
+  maxPatients     Int?      @map("max_patients")
+  modules         Json?
+  features        Json?
+  isPopular       Boolean   @default(false) @map("is_popular")
+  status          String    @default("active") @db.VarChar(50)
+  sort            Int?
+  dateCreated     DateTime  @default(now()) @map("date_created") @db.Timestamptz(6)
+  dateUpdated     DateTime  @updatedAt @map("date_updated") @db.Timestamptz(6)
+
+  paymentHistory  PaymentHistory[]
+
+  @@map("subscription_plans")
+  @@index([status])
+}
+
+// 2. SuperAdmin Settings (20 fields) - Singleton
+model SuperAdminSettings {
+  id                String    @id @default(uuid()) @db.Uuid
+  platformName      String    @default("Hospital SaaS") @map("platform_name") @db.VarChar(255)
+  platformLogo      String?   @map("platform_logo") @db.Text
+  supportEmail      String?   @map("support_email") @db.VarChar(255)
+  supportPhone      String?   @map("support_phone") @db.VarChar(50)
+  smtpHost          String?   @map("smtp_host") @db.VarChar(255)
+  smtpPort          Int?      @map("smtp_port")
+  smtpUser          String?   @map("smtp_user") @db.VarChar(255)
+  smtpPassword      String?   @map("smtp_password") @db.Text
+  smtpFromEmail     String?   @map("smtp_from_email") @db.VarChar(255)
+  smtpFromName      String?   @map("smtp_from_name") @db.VarChar(255)
+  paymentGateway    String?   @map("payment_gateway") @db.VarChar(100)
+  paymentApiKey     String?   @map("payment_api_key") @db.Text
+  paymentSecretKey  String?   @map("payment_secret_key") @db.Text
+  currency          String    @default("USD") @db.VarChar(10)
+  taxRate           Decimal   @default(0.00) @map("tax_rate") @db.Decimal(5, 2)
+  trialDays         Int       @default(14) @map("trial_days")
+  maintenanceMode   Boolean   @default(false) @map("maintenance_mode")
+  dateCreated       DateTime  @default(now()) @map("date_created") @db.Timestamptz(6)
+  dateUpdated       DateTime  @updatedAt @map("date_updated") @db.Timestamptz(6)
+
+  @@map("superadmin_settings")
+}
+
+// 3. Promotions (13 fields)
+model Promotion {
+  id              String    @id @default(uuid()) @db.Uuid
+  code            String    @unique @db.VarChar(50)
+  description     String?   @db.Text
+  discountType    String    @map("discount_type") @db.VarChar(50)
+  discountValue   Decimal   @map("discount_value") @db.Decimal(10, 2)
+  startDate       DateTime? @map("start_date") @db.Timestamptz(6)
+  endDate         DateTime? @map("end_date") @db.Timestamptz(6)
+  usageLimit      Int?      @map("usage_limit")
+  timesUsed       Int       @default(0) @map("times_used")
+  applicablePlans Json?     @map("applicable_plans")
+  isActive        Boolean   @default(true) @map("is_active")
+  dateCreated     DateTime  @default(now()) @map("date_created") @db.Timestamptz(6)
+  dateUpdated     DateTime  @updatedAt @map("date_updated") @db.Timestamptz(6)
+
+  @@map("promotions")
+  @@index([code])
+  @@index([isActive])
+}
+
+// 4. Surgical History (10 fields)
+model SurgicalHistory {
+  id            String    @id @default(uuid()) @db.Uuid
+  patientId     String    @map("patient_id") @db.Uuid
+  surgeryName   String    @map("surgery_name") @db.VarChar(255)
+  surgeryDate   DateTime  @map("surgery_date") @db.Date
+  surgeonName   String?   @map("surgeon_name") @db.VarChar(255)
+  hospitalName  String?   @map("hospital_name") @db.VarChar(255)
+  notes         String?   @db.Text
+  complications String?   @db.Text
+  dateCreated   DateTime  @default(now()) @map("date_created") @db.Timestamptz(6)
+  dateUpdated   DateTime  @updatedAt @map("date_updated") @db.Timestamptz(6)
+
+  @@map("surgical_history")
+  @@index([patientId])
+}
+
+// 5. Payment History (13 fields)
+model PaymentHistory {
+  id                    String           @id @default(uuid()) @db.Uuid
+  hospitalId            String           @map("hospital_id") @db.Uuid
+  subscriptionPlanId    String?          @map("subscription_plan_id") @db.Uuid
+  amount                Decimal          @db.Decimal(10, 2)
+  currency              String           @default("USD") @db.VarChar(10)
+  paymentMethod         String?          @map("payment_method") @db.VarChar(100)
+  transactionId         String?          @unique @map("transaction_id") @db.VarChar(255)
+  status                String           @default("pending") @db.VarChar(50)
+  billingPeriodStart    DateTime?        @map("billing_period_start") @db.Date
+  billingPeriodEnd      DateTime?        @map("billing_period_end") @db.Date
+  invoiceUrl            String?          @map("invoice_url") @db.Text
+  dateCreated           DateTime         @default(now()) @map("date_created") @db.Timestamptz(6)
+  dateUpdated           DateTime         @updatedAt @map("date_updated") @db.Timestamptz(6)
+
+  subscriptionPlan      SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+
+  @@map("payment_history")
+  @@index([hospitalId])
+  @@index([status])
+  @@index([transactionId])
+}
