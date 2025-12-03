@@ -6,6 +6,13 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken');
+const {
+  requirePermission,
+  requireAdmin,
+  requireSuperAdmin,
+  enforceOrgScope
+} = require('../middleware/rbac');
 
 console.log('✅ Department & Bed Management routes module loaded');
 
@@ -23,13 +30,6 @@ const authenticateToken = (req, res, next) => {
     });
   }
 
-  const jwt = require('jsonwebtoken');
-const {
-  requirePermission,
-  requireAdmin,
-  requireSuperAdmin,
-  enforceOrgScope
-} = require('../middleware/rbac');
   const JWT_SECRET = process.env.JWT_SECRET || 'hospital-saas-jwt-secret-2024';
 
   try {
