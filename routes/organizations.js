@@ -264,7 +264,7 @@ router.get('/:id', authenticateToken, requirePermission('ORG_VIEW'), requireOrgA
  * - Only SuperAdmin can create organizations
  * - Auto-generates code (h101, h102, etc.)
  */
-router.post('/', authenticateToken, requireSuperAdmin(), requireSuperAdmin, async (req, res) => {
+router.post('/', authenticateToken, requireSuperAdmin, async (req, res) => {
   try {
     const {
       name,
@@ -465,7 +465,7 @@ router.patch('/:id', authenticateToken, requireAdmin(), requireOrgAccess, async 
  * - Only SuperAdmin can delete organizations
  * - Sets status to 'inactive' instead of hard delete
  */
-router.delete('/:id', authenticateToken, requireSuperAdmin(), requireSuperAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
   try {
     // Soft delete: Set status to inactive
     const organization = await prisma.organization.update({
