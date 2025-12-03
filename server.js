@@ -25,42 +25,46 @@ app.get('/health', (req, res) => {
 // Seed endpoint - one-time database initialization
 app.post('/api/seed', async (req, res) => {
   try {
-    // Check if super admin already exists
+    // Check if new super admin already exists
     const existingAdmin = await prisma.user.findUnique({
-      where: { email: 'superadmin@hospital.com' }
+      where: { email: 'admin@novoraplus.com' }
     });
 
     if (existingAdmin) {
       return res.status(400).json({
-        errors: [{ message: 'Database already seeded. Super admin exists.' }]
+        errors: [{ message: 'Database already seeded. Demo accounts exist.' }]
       });
     }
 
-    // Create default organization
-    const org = await prisma.organization.create({
+    // Create City General Hospital organization
+    const cityGeneralOrg = await prisma.organization.create({
       data: {
-        code: 'h001',
-        name: 'Demo Hospital',
-        businessName: 'Demo Hospital Pvt Ltd',
-        address: '123 Medical Street',
-        city: 'Demo City',
-        state: 'Demo State',
-        pincode: '123456',
-        country: 'Demo Country',
+        code: 'cgh001',
+        name: 'City General Hospital',
+        businessName: 'City General Hospital Pvt Ltd',
+        address: '456 Healthcare Ave',
+        city: 'Metro City',
+        state: 'State',
+        pincode: '100001',
+        country: 'Country',
         phone: '+1234567890',
-        email: 'info@demohospital.com',
+        email: 'info@citygeneralhospital.com',
+        subdomain: 'citygeneralhospital',
         status: 'active'
       }
     });
 
-    // Create super admin user
-    const hashedPassword = await bcrypt.hash('admin123', 10);
+    // Hash passwords for all users
+    const superAdminPass = await bcrypt.hash('NovoraPlus@2024!', 10);
+    const hospitalAdminPass = await bcrypt.hash('Hospital@2024!', 10);
+    const staffPass = await bcrypt.hash('Staff@2024!', 10);
 
+    // Create super admin user (NovoraPlus admin)
     const superAdmin = await prisma.user.create({
       data: {
-        email: 'superadmin@hospital.com',
-        password: hashedPassword,
-        firstName: 'Super',
+        email: 'admin@novoraplus.com',
+        password: superAdminPass,
+        firstName: 'NovoraPlus',
         lastName: 'Admin',
         role: 'SuperAdmin',
         phone: '+1234567890',
@@ -68,36 +72,121 @@ app.post('/api/seed', async (req, res) => {
       }
     });
 
-    // Create demo admin user for the organization
-    const admin = await prisma.user.create({
+    // Create hospital admin for City General Hospital
+    const hospitalAdmin = await prisma.user.create({
       data: {
-        email: 'admin@demohospital.com',
-        password: hashedPassword,
+        email: 'admin@citygeneralhospital.com',
+        password: hospitalAdminPass,
         firstName: 'Hospital',
         lastName: 'Admin',
         role: 'HospitalAdmin',
         phone: '+1234567891',
         status: 'active',
-        orgId: org.id
+        orgId: cityGeneralOrg.id
+      }
+    });
+
+    // Create doctor
+    const doctor = await prisma.user.create({
+      data: {
+        email: 'doctor@citygeneralhospital.com',
+        password: staffPass,
+        firstName: 'John',
+        lastName: 'Smith',
+        role: 'Doctor',
+        phone: '+1234567892',
+        status: 'active',
+        orgId: cityGeneralOrg.id
+      }
+    });
+
+    // Create nurse
+    const nurse = await prisma.user.create({
+      data: {
+        email: 'nurse@citygeneralhospital.com',
+        password: staffPass,
+        firstName: 'Sarah',
+        lastName: 'Johnson',
+        role: 'Nurse',
+        phone: '+1234567893',
+        status: 'active',
+        orgId: cityGeneralOrg.id
+      }
+    });
+
+    // Create receptionist
+    const receptionist = await prisma.user.create({
+      data: {
+        email: 'reception@citygeneralhospital.com',
+        password: staffPass,
+        firstName: 'Emily',
+        lastName: 'Davis',
+        role: 'Receptionist',
+        phone: '+1234567894',
+        status: 'active',
+        orgId: cityGeneralOrg.id
+      }
+    });
+
+    // Create lab technician
+    const labTech = await prisma.user.create({
+      data: {
+        email: 'lab@citygeneralhospital.com',
+        password: staffPass,
+        firstName: 'Mike',
+        lastName: 'Wilson',
+        role: 'LabTechnician',
+        phone: '+1234567895',
+        status: 'active',
+        orgId: cityGeneralOrg.id
+      }
+    });
+
+    // Create pharmacist
+    const pharmacist = await prisma.user.create({
+      data: {
+        email: 'pharmacy@citygeneralhospital.com',
+        password: staffPass,
+        firstName: 'Lisa',
+        lastName: 'Brown',
+        role: 'Pharmacist',
+        phone: '+1234567896',
+        status: 'active',
+        orgId: cityGeneralOrg.id
       }
     });
 
     res.json({
       data: {
-        message: 'Database seeded successfully!',
-        organization: { id: org.id, name: org.name, code: org.code },
+        message: 'Database seeded successfully with all demo accounts!',
+        organization: { id: cityGeneralOrg.id, name: cityGeneralOrg.name, code: cityGeneralOrg.code },
         users: [
           { email: superAdmin.email, role: superAdmin.role },
-          { email: admin.email, role: admin.role }
+          { email: hospitalAdmin.email, role: hospitalAdmin.role },
+          { email: doctor.email, role: doctor.role },
+          { email: nurse.email, role: nurse.role },
+          { email: receptionist.email, role: receptionist.role },
+          { email: labTech.email, role: labTech.role },
+          { email: pharmacist.email, role: pharmacist.role }
         ],
         credentials: {
           superAdmin: {
-            email: 'superadmin@hospital.com',
-            password: 'admin123'
+            email: 'admin@novoraplus.com',
+            password: 'NovoraPlus@2024!'
           },
           hospitalAdmin: {
-            email: 'admin@demohospital.com',
-            password: 'admin123'
+            email: 'admin@citygeneralhospital.com',
+            password: 'Hospital@2024!'
+          },
+          staff: {
+            password: 'Staff@2024!',
+            accounts: [
+              'doctor@citygeneralhospital.com',
+              'nurse@citygeneralhospital.com',
+              'reception@citygeneralhospital.com',
+              'lab@citygeneralhospital.com',
+              'pharmacy@citygeneralhospital.com'
+            ]
           }
         }
       }
