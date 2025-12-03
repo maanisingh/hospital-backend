@@ -1,0 +1,18 @@
+# Railway ignore file
+# Files to exclude from Railway deployments
+
+# Development files
+*.md
+!README.md
+
+# Test files
+test-results/
+*.test.js
+*.spec.js
+
+# Documentation
+docs/
+
+# Local environment files
+.env.local
+.env.development
