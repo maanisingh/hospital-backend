@@ -8,7 +8,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:push": "prisma db push",
-    "deploy": "prisma generate && prisma db push && node server.js"
+    "prisma:seed": "node prisma/seed.js",
+    "deploy": "prisma generate && prisma db push && npm run prisma:seed && node server.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "keywords": [
     "hospital",
