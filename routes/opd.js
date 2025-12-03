@@ -91,7 +91,7 @@ async function generateTokenNumber(orgId, departmentId, date) {
 // ============================================================================
 
 // GET /api/opd/tokens - List all OPD tokens (with filters)
-router.get('/tokens', authenticateToken, async (req, res) => {
+router.get('/tokens', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -179,7 +179,7 @@ router.get('/tokens', authenticateToken, async (req, res) => {
 });
 
 // GET /api/opd/tokens/:id - Get single OPD token
-router.get('/tokens/:id', authenticateToken, async (req, res) => {
+router.get('/tokens/:id', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -217,7 +217,7 @@ router.get('/tokens/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/opd/tokens - Generate new OPD token
-router.post('/tokens', authenticateToken, async (req, res) => {
+router.post('/tokens', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -307,7 +307,7 @@ router.post('/tokens', authenticateToken, async (req, res) => {
 });
 
 // PATCH /api/opd/tokens/:id - Update OPD token
-router.patch('/tokens/:id', authenticateToken, async (req, res) => {
+router.patch('/tokens/:id', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -352,7 +352,7 @@ router.patch('/tokens/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/opd/tokens/:id/call - Call next patient
-router.post('/tokens/:id/call', authenticateToken, async (req, res) => {
+router.post('/tokens/:id/call', authenticateToken, requirePermission('OPD_CONSULTATION'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -397,7 +397,7 @@ router.post('/tokens/:id/call', authenticateToken, async (req, res) => {
 });
 
 // POST /api/opd/tokens/:id/complete - Complete consultation
-router.post('/tokens/:id/complete', authenticateToken, async (req, res) => {
+router.post('/tokens/:id/complete', authenticateToken, requirePermission('OPD_CONSULTATION'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -454,7 +454,7 @@ router.post('/tokens/:id/complete', authenticateToken, async (req, res) => {
 });
 
 // DELETE /api/opd/tokens/:id - Cancel OPD token
-router.delete('/tokens/:id', authenticateToken, async (req, res) => {
+router.delete('/tokens/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -490,7 +490,7 @@ router.delete('/tokens/:id', authenticateToken, async (req, res) => {
 // ============================================================================
 
 // GET /api/opd/queue - Get current queue for a department/doctor
-router.get('/queue', authenticateToken, async (req, res) => {
+router.get('/queue', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { departmentId, doctorId, date } = req.query;
@@ -575,7 +575,7 @@ router.get('/queue', authenticateToken, async (req, res) => {
 });
 
 // GET /api/opd/queue/next - Get next patient in queue
-router.get('/queue/next', authenticateToken, async (req, res) => {
+router.get('/queue/next', authenticateToken, requirePermission('OPD_CONSULTATION'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { departmentId, doctorId } = req.query;
@@ -646,7 +646,7 @@ router.get('/queue/next', authenticateToken, async (req, res) => {
 // ============================================================================
 
 // GET /api/opd/stats - Get OPD statistics
-router.get('/stats', authenticateToken, async (req, res) => {
+router.get('/stats', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { startDate, endDate, departmentId, doctorId } = req.query;

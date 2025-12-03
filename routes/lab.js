@@ -78,7 +78,7 @@ async function generateLabTestCode(orgId) {
 // ============== LAB TEST ORDERS ==============
 
 // GET all lab test orders
-router.get('/tests', authenticateToken, async (req, res) => {
+router.get('/tests', authenticateToken, requirePermission('LAB_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -141,7 +141,7 @@ router.get('/tests', authenticateToken, async (req, res) => {
 });
 
 // GET single lab test by ID
-router.get('/tests/:id', authenticateToken, async (req, res) => {
+router.get('/tests/:id', authenticateToken, requirePermission('LAB_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const where = { id: req.params.id };
@@ -177,7 +177,7 @@ router.get('/tests/:id', authenticateToken, async (req, res) => {
 });
 
 // POST create new lab test order
-router.post('/tests', authenticateToken, async (req, res) => {
+router.post('/tests', authenticateToken, requirePermission('LAB_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {

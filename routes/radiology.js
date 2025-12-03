@@ -78,7 +78,7 @@ async function generateRadiologyTestCode(orgId) {
 // ============== RADIOLOGY TEST ORDERS ==============
 
 // GET all radiology test orders
-router.get('/tests', authenticateToken, async (req, res) => {
+router.get('/tests', authenticateToken, requirePermission('RADIOLOGY_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -150,7 +150,7 @@ router.get('/tests', authenticateToken, async (req, res) => {
 });
 
 // GET single radiology test by ID
-router.get('/tests/:id', authenticateToken, async (req, res) => {
+router.get('/tests/:id', authenticateToken, requirePermission('RADIOLOGY_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const where = { id: req.params.id };
@@ -194,7 +194,7 @@ router.get('/tests/:id', authenticateToken, async (req, res) => {
 });
 
 // POST create new radiology test order
-router.post('/tests', authenticateToken, async (req, res) => {
+router.post('/tests', authenticateToken, requirePermission('RADIOLOGY_ORDER'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -277,7 +277,7 @@ router.post('/tests', authenticateToken, async (req, res) => {
 });
 
 // PATCH update radiology test
-router.patch('/tests/:id', authenticateToken, async (req, res) => {
+router.patch('/tests/:id', authenticateToken, requirePermission('RADIOLOGY_PROCESS'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const where = { id: req.params.id };

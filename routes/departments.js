@@ -191,8 +191,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
 /**
  * POST /api/departments
  * Create new department
+ * RBAC: Admins only
  */
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -264,7 +265,7 @@ router.post('/', authenticateToken, async (req, res) => {
  * PATCH /api/departments/:id
  * Update department
  */
-router.patch('/:id', authenticateToken, async (req, res) => {
+router.patch('/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -328,7 +329,7 @@ router.patch('/:id', authenticateToken, async (req, res) => {
  * DELETE /api/departments/:id
  * Soft delete department (set status to inactive)
  */
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -409,8 +410,9 @@ router.get('/:deptId/beds', authenticateToken, async (req, res) => {
 /**
  * POST /api/departments/:deptId/beds
  * Create new bed in department
+ * RBAC: Admins only
  */
-router.post('/:deptId/beds', authenticateToken, async (req, res) => {
+router.post('/:deptId/beds', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -493,7 +495,7 @@ router.post('/:deptId/beds', authenticateToken, async (req, res) => {
  * PATCH /api/beds/:id
  * Update bed details
  */
-router.patch('/beds/:id', authenticateToken, async (req, res) => {
+router.patch('/beds/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -594,7 +596,7 @@ router.get('/beds/available', authenticateToken, async (req, res) => {
  * POST /api/beds/:bedId/assign
  * Assign bed to patient (for IPD admission)
  */
-router.post('/beds/:bedId/assign', authenticateToken, async (req, res) => {
+router.post('/beds/:bedId/assign', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -661,7 +663,7 @@ router.post('/beds/:bedId/assign', authenticateToken, async (req, res) => {
  * POST /api/beds/assignments/:assignmentId/release
  * Release bed (patient discharged or transferred)
  */
-router.post('/beds/assignments/:assignmentId/release', authenticateToken, async (req, res) => {
+router.post('/beds/assignments/:assignmentId/release', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -723,7 +725,7 @@ router.post('/beds/assignments/:assignmentId/release', authenticateToken, async 
  * POST /api/beds/:bedId/transfer
  * Transfer patient to another bed
  */
-router.post('/beds/:bedId/transfer', authenticateToken, async (req, res) => {
+router.post('/beds/:bedId/transfer', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 

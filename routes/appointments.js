@@ -96,7 +96,7 @@ function checkTimeSlotAvailability(appointments, startTime, endTime) {
 // ============================================================================
 
 // GET /api/appointments - List all appointments (with filters)
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -184,7 +184,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // GET /api/appointments/:id - Get single appointment
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -221,7 +221,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/appointments - Create new appointment
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -329,7 +329,7 @@ router.post('/', authenticateToken, async (req, res) => {
 });
 
 // PATCH /api/appointments/:id - Update appointment
-router.patch('/:id', authenticateToken, async (req, res) => {
+router.patch('/:id', authenticateToken, requirePermission('OPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -535,7 +535,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 });
 
 // DELETE /api/appointments/:id - Delete appointment
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;

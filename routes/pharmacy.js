@@ -92,7 +92,7 @@ const generatePharmacyOrderNumber = async (orgId) => {
 // ============== MEDICINE INVENTORY API ==============
 
 // GET all medicines in inventory
-router.get('/medicines', authenticateToken, async (req, res) => {
+router.get('/medicines', authenticateToken, requirePermission('PHARMACY_READ'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { category, inStock, lowStock, page = 1, limit = 50 } = req.query;
@@ -162,7 +162,7 @@ router.get('/medicines/low-stock', authenticateToken, async (req, res) => {
 });
 
 // GET single medicine by ID
-router.get('/medicines/:id', authenticateToken, async (req, res) => {
+router.get('/medicines/:id', authenticateToken, requirePermission('PHARMACY_READ'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { id } = req.params;
@@ -194,7 +194,7 @@ router.get('/medicines/:id', authenticateToken, async (req, res) => {
 });
 
 // POST create new medicine
-router.post('/medicines', authenticateToken, async (req, res) => {
+router.post('/medicines', authenticateToken, requirePermission('PHARMACY_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -245,7 +245,7 @@ router.post('/medicines', authenticateToken, async (req, res) => {
 });
 
 // PATCH update medicine
-router.patch('/medicines/:id', authenticateToken, async (req, res) => {
+router.patch('/medicines/:id', authenticateToken, requirePermission('PHARMACY_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { id } = req.params;
@@ -279,7 +279,7 @@ router.patch('/medicines/:id', authenticateToken, async (req, res) => {
 });
 
 // DELETE medicine
-router.delete('/medicines/:id', authenticateToken, async (req, res) => {
+router.delete('/medicines/:id', authenticateToken, requirePermission('PHARMACY_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { id } = req.params;
@@ -362,7 +362,7 @@ router.post('/medicines/:id/stock', authenticateToken, async (req, res) => {
 // ============== PRESCRIPTION API ==============
 
 // GET all prescriptions
-router.get('/prescriptions', authenticateToken, async (req, res) => {
+router.get('/prescriptions', authenticateToken, requirePermission('PHARMACY_READ'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { patientId, doctorId, status, page = 1, limit = 50 } = req.query;
@@ -413,7 +413,7 @@ router.get('/prescriptions', authenticateToken, async (req, res) => {
 });
 
 // GET single prescription by ID
-router.get('/prescriptions/:id', authenticateToken, async (req, res) => {
+router.get('/prescriptions/:id', authenticateToken, requirePermission('PHARMACY_READ'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const { id } = req.params;
@@ -450,7 +450,7 @@ router.get('/prescriptions/:id', authenticateToken, async (req, res) => {
 });
 
 // POST create new prescription
-router.post('/prescriptions', authenticateToken, async (req, res) => {
+router.post('/prescriptions', authenticateToken, requirePermission('PRESCRIPTION_CREATE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {

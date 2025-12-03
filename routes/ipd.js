@@ -76,7 +76,7 @@ async function generateAdmissionNumber(orgId) {
 // ============================================================================
 
 // GET /api/ipd/admissions - List all IPD admissions (with filters)
-router.get('/admissions', authenticateToken, async (req, res) => {
+router.get('/admissions', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -162,7 +162,7 @@ router.get('/admissions', authenticateToken, async (req, res) => {
 });
 
 // GET /api/ipd/admissions/:id - Get single IPD admission
-router.get('/admissions/:id', authenticateToken, async (req, res) => {
+router.get('/admissions/:id', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -205,7 +205,7 @@ router.get('/admissions/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/ipd/admissions - Create new IPD admission
-router.post('/admissions', authenticateToken, async (req, res) => {
+router.post('/admissions', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const {
@@ -316,7 +316,7 @@ router.post('/admissions', authenticateToken, async (req, res) => {
 });
 
 // PATCH /api/ipd/admissions/:id - Update IPD admission
-router.patch('/admissions/:id', authenticateToken, async (req, res) => {
+router.patch('/admissions/:id', authenticateToken, requirePermission('IPD_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
@@ -362,7 +362,7 @@ router.patch('/admissions/:id', authenticateToken, async (req, res) => {
 });
 
 // POST /api/ipd/admissions/:id/discharge - Discharge patient
-router.post('/admissions/:id/discharge', authenticateToken, async (req, res) => {
+router.post('/admissions/:id/discharge', authenticateToken, requirePermission('IPD_DISCHARGE'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;

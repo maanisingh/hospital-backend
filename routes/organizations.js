@@ -147,7 +147,7 @@ const requireOrgAccess = async (req, res, next) => {
  * - SuperAdmin: See all organizations
  * - Hospital Admin: See only their organization
  */
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, requirePermission('ORG_VIEW'), async (req, res) => {
   try {
     const { status, search, limit = 50, offset = 0 } = req.query;
 
@@ -227,7 +227,7 @@ router.get('/', authenticateToken, async (req, res) => {
  * - SuperAdmin: Any organization
  * - Hospital Admin: Only their organization
  */
-router.get('/:id', authenticateToken, requireOrgAccess, async (req, res) => {
+router.get('/:id', authenticateToken, requirePermission('ORG_VIEW'), requireOrgAccess, async (req, res) => {
   try {
     const organization = await prisma.organization.findUnique({
       where: { id: req.params.id },
@@ -264,7 +264,7 @@ router.get('/:id', authenticateToken, requireOrgAccess, async (req, res) => {
  * - Only SuperAdmin can create organizations
  * - Auto-generates code (h101, h102, etc.)
  */
-router.post('/', authenticateToken, requireSuperAdmin, async (req, res) => {
+router.post('/', authenticateToken, requireSuperAdmin(), requireSuperAdmin, async (req, res) => {
   try {
     const {
       name,
@@ -363,7 +363,7 @@ router.post('/', authenticateToken, requireSuperAdmin, async (req, res) => {
  * - SuperAdmin: Can update any organization
  * - Hospital Admin: Can only update their own organization
  */
-router.patch('/:id', authenticateToken, requireOrgAccess, async (req, res) => {
+router.patch('/:id', authenticateToken, requireAdmin(), requireOrgAccess, async (req, res) => {
   try {
     const {
       name,
@@ -465,7 +465,7 @@ router.patch('/:id', authenticateToken, requireOrgAccess, async (req, res) => {
  * - Only SuperAdmin can delete organizations
  * - Sets status to 'inactive' instead of hard delete
  */
-router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, requireSuperAdmin(), requireSuperAdmin, async (req, res) => {
   try {
     // Soft delete: Set status to inactive
     const organization = await prisma.organization.update({

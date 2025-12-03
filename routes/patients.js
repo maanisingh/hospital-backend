@@ -145,7 +145,7 @@ async function getUserOrgId(req) {
  * RBAC: PATIENT_ACCESS (SuperAdmin, HospitalAdmin, Doctor, Nurse, Receptionist)
  * Supports search, pagination, and filters
  */
-router.get('/', authenticateToken, requirePermission('PATIENT_ACCESS'), async (req, res) => {
+router.get('/', authenticateToken, requirePermission('PATIENT_ACCESS'), requirePermission('PATIENT_ACCESS'), async (req, res) => {
   try {
     const { status, search, limit = 50, offset = 0 } = req.query;
     const orgId = await getUserOrgId(req);
@@ -248,7 +248,7 @@ router.get('/code/:patientCode', authenticateToken, async (req, res) => {
  * GET /api/patients/:id
  * Get single patient by ID
  */
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticateToken, requirePermission('PATIENT_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -297,7 +297,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
  * - Auto-generates patient code (PAT001, PAT002, etc.)
  * - Auto-calculates age from date of birth
  */
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, requirePermission('PATIENT_WRITE'), async (req, res) => {
   const MAX_RETRIES = 3;
   let retryCount = 0;
 
@@ -427,7 +427,7 @@ router.post('/', authenticateToken, async (req, res) => {
  * PATCH /api/patients/:id
  * Update patient information
  */
-router.patch('/:id', authenticateToken, async (req, res) => {
+router.patch('/:id', authenticateToken, requirePermission('PATIENT_WRITE'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -512,7 +512,7 @@ router.patch('/:id', authenticateToken, async (req, res) => {
  * Delete/deactivate patient
  * Sets status to 'inactive' instead of hard delete
  */
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -550,7 +550,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
  * - Pharmacy orders
  * - Bills
  */
-router.get('/:id/history', authenticateToken, async (req, res) => {
+router.get('/:id/history', authenticateToken, requirePermission('PATIENT_ACCESS'), async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 

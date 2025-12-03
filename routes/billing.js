@@ -92,7 +92,7 @@ async function generateReceiptNumber(orgId) {
 // ============== INVOICE ENDPOINTS ==============
 
 // GET all invoices
-router.get('/invoices', authenticateToken, async (req, res) => {
+router.get('/invoices', authenticateToken, requirePermission('BILLING_VIEW'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -153,7 +153,7 @@ router.get('/invoices', authenticateToken, async (req, res) => {
 });
 
 // GET single invoice by ID
-router.get('/invoices/:id', authenticateToken, async (req, res) => {
+router.get('/invoices/:id', authenticateToken, requirePermission('BILLING_VIEW'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const where = { id: req.params.id };
@@ -192,7 +192,7 @@ router.get('/invoices/:id', authenticateToken, async (req, res) => {
 });
 
 // POST create new invoice
-router.post('/invoices', authenticateToken, async (req, res) => {
+router.post('/invoices', authenticateToken, requirePermission('BILLING_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -277,7 +277,7 @@ router.post('/invoices', authenticateToken, async (req, res) => {
 });
 
 // PATCH update invoice
-router.patch('/invoices/:id', authenticateToken, async (req, res) => {
+router.patch('/invoices/:id', authenticateToken, requirePermission('BILLING_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const where = { id: req.params.id };
@@ -351,7 +351,7 @@ router.delete('/invoices/:id', authenticateToken, async (req, res) => {
 // ============== PAYMENT ENDPOINTS ==============
 
 // GET all payments
-router.get('/payments', authenticateToken, async (req, res) => {
+router.get('/payments', authenticateToken, requirePermission('BILLING_VIEW'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
@@ -459,7 +459,7 @@ router.get('/payments/:id', authenticateToken, async (req, res) => {
 });
 
 // POST record new payment
-router.post('/payments', authenticateToken, async (req, res) => {
+router.post('/payments', authenticateToken, requirePermission('BILLING_MANAGE'), async (req, res) => {
   try {
     const orgId = getUserOrgId(req);
     const {
