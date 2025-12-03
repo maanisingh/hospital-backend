@@ -21,7 +21,6 @@ async function main() {
       country: 'Country',
       phone: '+1234567890',
       email: 'info@citygeneralhospital.com',
-      subdomain: 'citygeneralhospital',
       status: 'active'
     }
   });

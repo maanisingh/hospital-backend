@@ -49,7 +49,6 @@ app.post('/api/seed', async (req, res) => {
         country: 'Country',
         phone: '+1234567890',
         email: 'info@citygeneralhospital.com',
-        subdomain: 'citygeneralhospital',
         status: 'active'
       }
     });
@@ -221,7 +220,6 @@ app.post('/api/seed/demo-accounts', async (req, res) => {
           country: 'Country',
           phone: '+1234567890',
           email: 'info@citygeneralhospital.com',
-          subdomain: 'citygeneralhospital',
           status: 'active'
         }
       });
