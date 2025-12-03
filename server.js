@@ -199,6 +199,171 @@ app.post('/api/seed', async (req, res) => {
   }
 });
 
+// Add missing demo accounts endpoint
+app.post('/api/seed/demo-accounts', async (req, res) => {
+  try {
+    // Check if City General Hospital org exists
+    let cityGeneralOrg = await prisma.organization.findUnique({
+      where: { code: 'cgh001' }
+    });
+
+    // Create it if it doesn't exist
+    if (!cityGeneralOrg) {
+      cityGeneralOrg = await prisma.organization.create({
+        data: {
+          code: 'cgh001',
+          name: 'City General Hospital',
+          businessName: 'City General Hospital Pvt Ltd',
+          address: '456 Healthcare Ave',
+          city: 'Metro City',
+          state: 'State',
+          pincode: '100001',
+          country: 'Country',
+          phone: '+1234567890',
+          email: 'info@citygeneralhospital.com',
+          subdomain: 'citygeneralhospital',
+          status: 'active'
+        }
+      });
+    }
+
+    // Hash passwords for all users
+    const superAdminPass = await bcrypt.hash('NovoraPlus@2024!', 10);
+    const hospitalAdminPass = await bcrypt.hash('Hospital@2024!', 10);
+    const staffPass = await bcrypt.hash('Staff@2024!', 10);
+
+    const createdUsers = [];
+    const skippedUsers = [];
+
+    // Helper function to create user if not exists
+    async function createUserIfNotExists(userData) {
+      const existing = await prisma.user.findUnique({
+        where: { email: userData.email }
+      });
+
+      if (existing) {
+        skippedUsers.push(userData.email);
+        return null;
+      }
+
+      const user = await prisma.user.create({ data: userData });
+      createdUsers.push({ email: user.email, role: user.role });
+      return user;
+    }
+
+    // Create all demo accounts
+    await createUserIfNotExists({
+      email: 'admin@novoraplus.com',
+      password: superAdminPass,
+      firstName: 'NovoraPlus',
+      lastName: 'Admin',
+      role: 'SuperAdmin',
+      phone: '+1234567890',
+      status: 'active'
+    });
+
+    await createUserIfNotExists({
+      email: 'admin@citygeneralhospital.com',
+      password: hospitalAdminPass,
+      firstName: 'Hospital',
+      lastName: 'Admin',
+      role: 'HospitalAdmin',
+      phone: '+1234567891',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    await createUserIfNotExists({
+      email: 'doctor@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'John',
+      lastName: 'Smith',
+      role: 'Doctor',
+      phone: '+1234567892',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    await createUserIfNotExists({
+      email: 'nurse@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Sarah',
+      lastName: 'Johnson',
+      role: 'Nurse',
+      phone: '+1234567893',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    await createUserIfNotExists({
+      email: 'reception@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Emily',
+      lastName: 'Davis',
+      role: 'Receptionist',
+      phone: '+1234567894',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    await createUserIfNotExists({
+      email: 'lab@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Mike',
+      lastName: 'Wilson',
+      role: 'LabTechnician',
+      phone: '+1234567895',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    await createUserIfNotExists({
+      email: 'pharmacy@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Lisa',
+      lastName: 'Brown',
+      role: 'Pharmacist',
+      phone: '+1234567896',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    });
+
+    res.json({
+      data: {
+        message: 'Demo accounts processed successfully!',
+        organization: { id: cityGeneralOrg.id, name: cityGeneralOrg.name },
+        created: createdUsers,
+        skipped: skippedUsers,
+        credentials: {
+          superAdmin: {
+            email: 'admin@novoraplus.com',
+            password: 'NovoraPlus@2024!'
+          },
+          hospitalAdmin: {
+            email: 'admin@citygeneralhospital.com',
+            password: 'Hospital@2024!'
+          },
+          staff: {
+            password: 'Staff@2024!',
+            accounts: [
+              'doctor@citygeneralhospital.com',
+              'nurse@citygeneralhospital.com',
+              'reception@citygeneralhospital.com',
+              'lab@citygeneralhospital.com',
+              'pharmacy@citygeneralhospital.com'
+            ]
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Demo accounts error:', error);
+    res.status(500).json({
+      errors: [{ message: 'Failed to create demo accounts', details: error.message }]
+    });
+  }
+});
+
 // ============== AUTHENTICATION API ==============
 
 // Login endpoint - compatible with Directus structure
