@@ -454,7 +454,7 @@ router.post('/tokens/:id/complete', authenticateToken, requirePermission('OPD_CO
 });
 
 // DELETE /api/opd/tokens/:id - Cancel OPD token
-router.delete('/tokens/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.delete('/tokens/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;

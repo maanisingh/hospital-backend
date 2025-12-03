@@ -512,7 +512,7 @@ router.patch('/:id', authenticateToken, requirePermission('PATIENT_WRITE'), asyn
  * Delete/deactivate patient
  * Sets status to 'inactive' instead of hard delete
  */
-router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 

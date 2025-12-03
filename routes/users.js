@@ -55,7 +55,7 @@ const authenticateToken = (req, res, next) => {
  * - SuperAdmin: Can list users from any org (with orgId param)
  * - HospitalAdmin: Can only list users from their org
  */
-router.get('/', authenticateToken, requireAdmin(), async (req, res) => {
+router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { role, status, search, limit = 50, offset = 0 } = req.query;
 
@@ -144,7 +144,7 @@ router.get('/', authenticateToken, requireAdmin(), async (req, res) => {
  * Get single user by ID
  * RBAC: Admins only
  */
-router.get('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -201,7 +201,7 @@ router.get('/:id', authenticateToken, requireAdmin(), async (req, res) => {
  * - SuperAdmin: Can create users with any role in any org
  * - HospitalAdmin: Can create users (except HospitalAdmin/SuperAdmin) in their org only
  */
-router.post('/', authenticateToken, requireAdmin(), async (req, res) => {
+router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const {
       email,
@@ -302,7 +302,7 @@ router.post('/', authenticateToken, requireAdmin(), async (req, res) => {
  * Update user (including role change)
  * RBAC: Admins only
  */
-router.patch('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.patch('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -392,7 +392,7 @@ router.patch('/:id', authenticateToken, requireAdmin(), async (req, res) => {
  * Delete user (soft delete by setting status to inactive)
  * RBAC: Admins only
  */
-router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -445,7 +445,7 @@ router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
  * Get list of roles that current user can assign
  * RBAC: Admins only
  */
-router.get('/roles/available', authenticateToken, requireAdmin(), async (req, res) => {
+router.get('/roles/available', authenticateToken, requireAdmin, async (req, res) => {
   try {
     let availableRoles;
 

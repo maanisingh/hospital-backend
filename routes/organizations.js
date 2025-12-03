@@ -363,7 +363,7 @@ router.post('/', authenticateToken, requireSuperAdmin, async (req, res) => {
  * - SuperAdmin: Can update any organization
  * - Hospital Admin: Can only update their own organization
  */
-router.patch('/:id', authenticateToken, requireAdmin(), requireOrgAccess, async (req, res) => {
+router.patch('/:id', authenticateToken, requireAdmin, requireOrgAccess, async (req, res) => {
   try {
     const {
       name,

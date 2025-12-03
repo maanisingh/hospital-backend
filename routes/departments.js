@@ -193,7 +193,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
  * Create new department
  * RBAC: Admins only
  */
-router.post('/', authenticateToken, requireAdmin(), async (req, res) => {
+router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -265,7 +265,7 @@ router.post('/', authenticateToken, requireAdmin(), async (req, res) => {
  * PATCH /api/departments/:id
  * Update department
  */
-router.patch('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.patch('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -329,7 +329,7 @@ router.patch('/:id', authenticateToken, requireAdmin(), async (req, res) => {
  * DELETE /api/departments/:id
  * Soft delete department (set status to inactive)
  */
-router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -412,7 +412,7 @@ router.get('/:deptId/beds', authenticateToken, async (req, res) => {
  * Create new bed in department
  * RBAC: Admins only
  */
-router.post('/:deptId/beds', authenticateToken, requireAdmin(), async (req, res) => {
+router.post('/:deptId/beds', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 
@@ -495,7 +495,7 @@ router.post('/:deptId/beds', authenticateToken, requireAdmin(), async (req, res)
  * PATCH /api/beds/:id
  * Update bed details
  */
-router.patch('/beds/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.patch('/beds/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
 

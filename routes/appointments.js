@@ -535,7 +535,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 });
 
 // DELETE /api/appointments/:id - Delete appointment
-router.delete('/:id', authenticateToken, requireAdmin(), async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orgId = await getUserOrgId(req);
     const { id } = req.params;
