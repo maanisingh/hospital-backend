@@ -6,37 +6,41 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting database seed...');
 
-  // Create default organization
-  const org = await prisma.organization.upsert({
-    where: { code: 'h001' },
+  // Create City General Hospital organization
+  const cityGeneralOrg = await prisma.organization.upsert({
+    where: { code: 'cgh001' },
     update: {},
     create: {
-      code: 'h001',
-      name: 'Demo Hospital',
-      businessName: 'Demo Hospital Pvt Ltd',
-      address: '123 Medical Street',
-      city: 'Demo City',
-      state: 'Demo State',
-      pincode: '123456',
-      country: 'Demo Country',
+      code: 'cgh001',
+      name: 'City General Hospital',
+      businessName: 'City General Hospital Pvt Ltd',
+      address: '456 Healthcare Ave',
+      city: 'Metro City',
+      state: 'State',
+      pincode: '100001',
+      country: 'Country',
       phone: '+1234567890',
-      email: 'info@demohospital.com',
+      email: 'info@citygeneralhospital.com',
+      subdomain: 'citygeneralhospital',
       status: 'active'
     }
   });
 
-  console.log('✅ Created/Updated organization:', org.name);
+  console.log('✅ Created/Updated organization:', cityGeneralOrg.name);
 
-  // Create super admin user
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  // Hash passwords for all users
+  const superAdminPass = await bcrypt.hash('NovoraPlus@2024!', 10);
+  const hospitalAdminPass = await bcrypt.hash('Hospital@2024!', 10);
+  const staffPass = await bcrypt.hash('Staff@2024!', 10);
 
+  // Create super admin user (NovoraPlus admin)
   const superAdmin = await prisma.user.upsert({
-    where: { email: 'superadmin@hospital.com' },
+    where: { email: 'admin@novoraplus.com' },
     update: {},
     create: {
-      email: 'superadmin@hospital.com',
-      password: hashedPassword,
-      firstName: 'Super',
+      email: 'admin@novoraplus.com',
+      password: superAdminPass,
+      firstName: 'NovoraPlus',
       lastName: 'Admin',
       role: 'SuperAdmin',
       phone: '+1234567890',
@@ -46,38 +50,133 @@ async function main() {
 
   console.log('✅ Created/Updated super admin:', superAdmin.email);
 
-  // Create demo admin user for the organization
-  const adminPassword = await bcrypt.hash('admin123', 10);
-
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@demohospital.com' },
+  // Create hospital admin for City General Hospital
+  const hospitalAdmin = await prisma.user.upsert({
+    where: { email: 'admin@citygeneralhospital.com' },
     update: {},
     create: {
-      email: 'admin@demohospital.com',
-      password: adminPassword,
+      email: 'admin@citygeneralhospital.com',
+      password: hospitalAdminPass,
       firstName: 'Hospital',
       lastName: 'Admin',
       role: 'HospitalAdmin',
       phone: '+1234567891',
       status: 'active',
-      orgId: org.id
+      orgId: cityGeneralOrg.id
     }
   });
 
-  console.log('✅ Created/Updated hospital admin:', admin.email);
+  console.log('✅ Created/Updated hospital admin:', hospitalAdmin.email);
+
+  // Create doctor
+  const doctor = await prisma.user.upsert({
+    where: { email: 'doctor@citygeneralhospital.com' },
+    update: {},
+    create: {
+      email: 'doctor@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'John',
+      lastName: 'Smith',
+      role: 'Doctor',
+      phone: '+1234567892',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    }
+  });
+
+  console.log('✅ Created/Updated doctor:', doctor.email);
+
+  // Create nurse
+  const nurse = await prisma.user.upsert({
+    where: { email: 'nurse@citygeneralhospital.com' },
+    update: {},
+    create: {
+      email: 'nurse@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Sarah',
+      lastName: 'Johnson',
+      role: 'Nurse',
+      phone: '+1234567893',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    }
+  });
+
+  console.log('✅ Created/Updated nurse:', nurse.email);
+
+  // Create receptionist
+  const receptionist = await prisma.user.upsert({
+    where: { email: 'reception@citygeneralhospital.com' },
+    update: {},
+    create: {
+      email: 'reception@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Emily',
+      lastName: 'Davis',
+      role: 'Receptionist',
+      phone: '+1234567894',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    }
+  });
+
+  console.log('✅ Created/Updated receptionist:', receptionist.email);
+
+  // Create lab technician
+  const labTech = await prisma.user.upsert({
+    where: { email: 'lab@citygeneralhospital.com' },
+    update: {},
+    create: {
+      email: 'lab@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Mike',
+      lastName: 'Wilson',
+      role: 'LabTechnician',
+      phone: '+1234567895',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    }
+  });
+
+  console.log('✅ Created/Updated lab technician:', labTech.email);
+
+  // Create pharmacist
+  const pharmacist = await prisma.user.upsert({
+    where: { email: 'pharmacy@citygeneralhospital.com' },
+    update: {},
+    create: {
+      email: 'pharmacy@citygeneralhospital.com',
+      password: staffPass,
+      firstName: 'Lisa',
+      lastName: 'Brown',
+      role: 'Pharmacist',
+      phone: '+1234567896',
+      status: 'active',
+      orgId: cityGeneralOrg.id
+    }
+  });
+
+  console.log('✅ Created/Updated pharmacist:', pharmacist.email);
 
   console.log('');
   console.log('🎉 Seed completed successfully!');
   console.log('');
   console.log('📝 Login Credentials:');
   console.log('');
-  console.log('Super Admin:');
-  console.log('  Email: superadmin@hospital.com');
-  console.log('  Password: admin123');
+  console.log('SuperAdmin:');
+  console.log('  Email: admin@novoraplus.com');
+  console.log('  Password: NovoraPlus@2024!');
   console.log('');
-  console.log('Hospital Admin:');
-  console.log('  Email: admin@demohospital.com');
-  console.log('  Password: admin123');
+  console.log('Hospital Admin (City General Hospital):');
+  console.log('  Email: admin@citygeneralhospital.com');
+  console.log('  Password: Hospital@2024!');
+  console.log('');
+  console.log('Staff (All use password: Staff@2024!):');
+  console.log('  Doctor: doctor@citygeneralhospital.com');
+  console.log('  Nurse: nurse@citygeneralhospital.com');
+  console.log('  Receptionist: reception@citygeneralhospital.com');
+  console.log('  Lab Tech: lab@citygeneralhospital.com');
+  console.log('  Pharmacist: pharmacy@citygeneralhospital.com');
   console.log('');
 }
 
