@@ -22,6 +22,94 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Hospital SaaS Backend is running' });
 });
 
+// Seed endpoint - one-time database initialization
+app.post('/api/seed', async (req, res) => {
+  try {
+    // Check if super admin already exists
+    const existingAdmin = await prisma.user.findUnique({
+      where: { email: 'superadmin@hospital.com' }
+    });
+
+    if (existingAdmin) {
+      return res.status(400).json({
+        errors: [{ message: 'Database already seeded. Super admin exists.' }]
+      });
+    }
+
+    // Create default organization
+    const org = await prisma.organization.create({
+      data: {
+        code: 'h001',
+        name: 'Demo Hospital',
+        businessName: 'Demo Hospital Pvt Ltd',
+        address: '123 Medical Street',
+        city: 'Demo City',
+        state: 'Demo State',
+        pincode: '123456',
+        country: 'Demo Country',
+        phone: '+1234567890',
+        email: 'info@demohospital.com',
+        status: 'active'
+      }
+    });
+
+    // Create super admin user
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+
+    const superAdmin = await prisma.user.create({
+      data: {
+        email: 'superadmin@hospital.com',
+        password: hashedPassword,
+        firstName: 'Super',
+        lastName: 'Admin',
+        role: 'SuperAdmin',
+        phone: '+1234567890',
+        status: 'active'
+      }
+    });
+
+    // Create demo admin user for the organization
+    const admin = await prisma.user.create({
+      data: {
+        email: 'admin@demohospital.com',
+        password: hashedPassword,
+        firstName: 'Hospital',
+        lastName: 'Admin',
+        role: 'HospitalAdmin',
+        phone: '+1234567891',
+        status: 'active',
+        orgId: org.id
+      }
+    });
+
+    res.json({
+      data: {
+        message: 'Database seeded successfully!',
+        organization: { id: org.id, name: org.name, code: org.code },
+        users: [
+          { email: superAdmin.email, role: superAdmin.role },
+          { email: admin.email, role: admin.role }
+        ],
+        credentials: {
+          superAdmin: {
+            email: 'superadmin@hospital.com',
+            password: 'admin123'
+          },
+          hospitalAdmin: {
+            email: 'admin@demohospital.com',
+            password: 'admin123'
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Seed error:', error);
+    res.status(500).json({
+      errors: [{ message: 'Failed to seed database', details: error.message }]
+    });
+  }
+});
+
 // ============== AUTHENTICATION API ==============
 
 // Login endpoint - compatible with Directus structure
