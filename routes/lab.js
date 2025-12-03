@@ -3,6 +3,12 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const jwt = require('jsonwebtoken');
+const {
+  requirePermission,
+  requireAdmin,
+  requireSuperAdmin,
+  enforceOrgScope
+} = require('../middleware/rbac');
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'hospital-saas-jwt-secret-2024';

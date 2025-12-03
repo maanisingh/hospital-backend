@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-12-03T17:00:48+00:00",
+  "apiUrl": "https://hospital-api.alexandratechlab.com",
+  "totalTests": 53,
+  "passedTests": 52,
+  "failedTests": 1,
+  "successRate": 98,
+  "testLog": "/root/hospital-backend/test-results/test_log_20251203_170041.txt"
+}

@@ -1,0 +1,33 @@
+╔════════════════════════════════════════════════════════════════╗
+║           HOSPITAL SAAS - LOGIN QUICK REFERENCE                ║
+╚════════════════════════════════════════════════════════════════╝
+
+API: https://hospital-api.alexandratechlab.com
+
+┌────────────────────────────────────────────────────────────────┐
+│ SUPERADMIN                                                     │
+├────────────────────────────────────────────────────────────────┤
+│ Email:    admin@novoraplus.com                                 │
+│ Password: NovoraPlus@2024!                                     │
+│ Access:   Full platform - All hospitals                       │
+└────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────┐
+│ HOSPITAL ADMIN (City General)                                  │
+├────────────────────────────────────────────────────────────────┤
+│ Email:    admin@citygeneralhospital.com                        │
+│ Password: Hospital@2024!                                       │
+│ Access:   Full hospital management                            │
+└────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────┐
+│ STAFF USERS (All use: Staff@2024!)                            │
+├────────────────────────────────────────────────────────────────┤
+│ Doctor:        doctor@citygeneralhospital.com                  │
+│ Nurse:         nurse@citygeneralhospital.com                   │
+│ Receptionist:  reception@citygeneralhospital.com               │
+│ Lab Tech:      lab@citygeneralhospital.com                     │
+│ Pharmacist:    pharmacy@citygeneralhospital.com                │
+└────────────────────────────────────────────────────────────────┘
+
+Status: ✅ ALL TESTED & WORKING (2025-12-02)

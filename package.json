@@ -10,15 +10,22 @@
     "prisma:push": "prisma db push",
     "deploy": "prisma generate && prisma db push && node server.js"
   },
-  "keywords": ["hospital", "saas", "backend", "prisma"],
+  "keywords": [
+    "hospital",
+    "saas",
+    "backend",
+    "prisma"
+  ],
   "author": "",
   "license": "ISC",
   "description": "Hospital SaaS Backend - Express + Prisma",
   "dependencies": {
-    "@prisma/client": "^7.0.1",
+    "@prisma/client": "5.22.0",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "prisma": "^7.0.1"
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "5.22.0"
   }
 }

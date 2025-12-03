@@ -1,11 +1,16 @@
 // Patient CRUD Endpoints
 // Routes for managing patients with auto-generated codes (PAT001, PAT002, etc.)
-// Multi-tenant with orgId filtering
+// Multi-tenant with orgId filtering + RBAC
 
 const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const {
+  requirePermission,
+  requireRoleWithOrgScope,
+  PERMISSION_GROUPS
+} = require('../middleware/rbac');
 
 console.log('✅ Patient routes module loaded');
 
@@ -137,11 +142,10 @@ async function getUserOrgId(req) {
 /**
  * GET /api/patients
  * List all patients for organization
- * - SuperAdmin: Must provide orgId query param
- * - Hospital Admin: See patients from their organization
+ * RBAC: PATIENT_ACCESS (SuperAdmin, HospitalAdmin, Doctor, Nurse, Receptionist)
  * Supports search, pagination, and filters
  */
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, requirePermission('PATIENT_ACCESS'), async (req, res) => {
   try {
     const { status, search, limit = 50, offset = 0 } = req.query;
     const orgId = await getUserOrgId(req);

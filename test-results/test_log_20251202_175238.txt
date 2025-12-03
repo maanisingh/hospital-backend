@@ -1,0 +1,194 @@
+========================================
+Hospital SaaS Backend - Comprehensive Testing
+Started: Tue Dec  2 05:52:38 PM UTC 2025
+API URL: https://hospital-api.alexandratechlab.com
+========================================
+
+[0;34m=== 1. Authentication Module Tests ===[0m
+Testing: Health Check... [0;32m✓ PASSED[0m (HTTP 200)
+Logging in to get access token...
+[0;32m✓ Successfully obtained access token[0m
+Testing: Invalid Login... [0;32m✓ PASSED[0m (HTTP 401)
+Testing: Get Current User... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Unauthorized Access... [0;32m✓ PASSED[0m (HTTP 403)
+
+[0;34m=== 2. Organization Module Tests ===[0m
+Testing: List Organizations... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Organization created with ID: cda4ff6b-f027-4ab5-80f1-0779faef3008[0m
+Testing: Get Organization by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Organization... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Organization Stats... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 3. Patient Management Tests ===[0m
+[0;31m✗ Failed to create patient[0m
+Testing: List Patients... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by Code... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.patient.findFirst()` invocation in\n/root/hospital-backend/routes/patients.js:249:42\n\n  246 try {\n  247   const orgId = await getUserOrgId(req);\n  248 \n→ 249   const patient = await prisma.patient.findFirst(\nInconsistent column data: Error creating UUID, invalid character: expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-], found `o` at 2"}]}
+Testing: Update Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot PATCH /api/patients/</pre>
+</body>
+</html>
+Testing: Get Patient History... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/patients//history</pre>
+</body>
+</html>
+
+[0;34m=== 4. Department & Bed Management Tests ===[0m
+[0;31m✗ Failed to create department[0m
+Testing: List Departments... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+[0;31m✗ Failed to create bed[0m
+Testing: Get Available Beds... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+Testing: Assign Bed to Patient... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/departments/beds//assign</pre>
+</body>
+</html>
+
+[0;34m=== 5. OPD Module Tests ===[0m
+[0;31m✗ Failed to create OPD token[0m
+Testing: List OPD Tokens... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Queue Status... [0;31m✗ FAILED[0m (Expected: 200, Got: 400)
+Response: {"errors":[{"message":"Either departmentId or doctorId is required"}]}
+Testing: Call Next Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//call</pre>
+</body>
+</html>
+Testing: Complete Consultation... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//complete</pre>
+</body>
+</html>
+Testing: Get OPD Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 6. Appointments Module Tests ===[0m
+[0;31m✗ Failed to create appointment[0m
+Testing: List Appointments... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.appointment.findMany()` invocation in\n/root/hospital-backend/routes/appointments.js:135:26\n\n  132 }\n  133 \n  134 const [appointments, total] = await Promise.all([\n→ 135   prisma.appointment.findMany({\n          where: {\n            orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\"\n          },\n          include: {\n            patient: {\n              select: {\n                id: true,\n                name: true,\n                mobile: true,\n                age: true,\n                gender: true\n              }\n            },\n            doctor: {\n              select: {\n                id: true,\n                firstName: true,\n                lastName: true,\n                email: true\n              }\n            },\n            department: {\n            ~~~~~~~~~~\n              select: {\n                id: true,\n                name: true,\n                code: true\n              }\n            },\n        ?   organization?: true\n          },\n          orderBy: {\n            appointmentDate: \"asc\"\n          },\n          skip: 0,\n          take: 50\n        })\n\nUnknown field `department` for include statement on model `Appointment`. Available options are marked with ?."}]}
+Testing: Confirm Appointment... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/appointments//confirm</pre>
+</body>
+</html>
+Testing: Get Appointment Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 7. Billing Module Tests ===[0m
+[0;31m✗ Failed to create invoice[0m
+Testing: List Invoices... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Payment... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"errors":[{"message":"Invoice ID is required"}]}
+Testing: Get Patient Outstanding... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/billing/patients//outstanding</pre>
+</body>
+</html>
+Testing: Get Billing Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 8. Lab Module Tests ===[0m
+[0;31m✗ Failed to order lab test[0m
+Testing: List Lab Tests... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.labTest.findMany()` invocation in\n/root/hospital-backend/routes/lab.js:86:22\n\n  83 \n  84 const skip = (parseInt(page) - 1) * parseInt(limit);\n  85 const [tests, total] = await Promise.all([\n→ 86   prisma.labTest.findMany({\n         where: {\n           orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\"\n         },\n         include: {\n           patient: {\n             select: {\n               id: true,\n               name: true,\n               patientCode: true,\n               age: true,\n               gender: true\n             }\n           },\n           orderedByDoctor: {\n           ~~~~~~~~~~~~~~~\n             select: {\n               id: true,\n               firstName: true,\n               lastName: true\n             }\n           },\n           samples: true,\n       ?   organization?: true\n         },\n         skip: 0,\n         take: 20,\n         orderBy: {\n           orderDate: \"desc\"\n         }\n       })\n\nUnknown field `orderedByDoctor` for include statement on model `LabTest`. Available options are marked with ?."}]}
+Testing: Collect Lab Sample... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/lab/tests//samples</pre>
+</body>
+</html>
+Testing: Get Lab Statistics... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.labTest.findMany()` invocation in\n/root/hospital-backend/routes/lab.js:706:22\n\n  703 prisma.labTest.count({ where: { ...where, status: 'completed' } }),\n  704 prisma.labTest.count({ where: { ...where, status: 'cancelled' } }),\n  705 prisma.labTest.count({ where: { ...where, urgency: 'urgent' } }),\n→ 706 prisma.labTest.findMany({\n        where: {\n          orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\",\n          status: \"completed\",\n          completedAt: {\n          ~~~~~~~~~~~\n            not: null\n          },\n      ?   AND?: LabTestWhereInput | LabTestWhereInput[],\n      ?   OR?: LabTestWhereInput[],\n      ?   NOT?: LabTestWhereInput | LabTestWhereInput[],\n      ?   id?: UuidFilter | String,\n      ?   patientId?: UuidFilter | String,\n      ?   testCode?: StringFilter | String,\n      ?   testName?: StringFilter | String,\n      ?   testCategory?: StringNullableFilter | String | Null,\n      ?   orderedBy?: StringNullableFilter | String | Null,\n      ?   orderDate?: DateTimeFilter | DateTime,\n      ?   sampleDate?: DateTimeNullableFilter | DateTime | Null,\n      ?   reportDate?: DateTimeNullableFilter | DateTime | Null,\n      ?   paymentStatus?: StringFilter | String,\n      ?   testResults?: JsonNullableFilter,\n      ?   normalRange?: StringNullableFilter | String | Null,\n      ?   remarks?: StringNullableFilter | String | Null,\n      ?   reportPdfUrl?: StringNullableFilter | String | Null,\n      ?   charges?: DecimalNullableFilter | Decimal | Null,\n      ?   urgency?: StringFilter | String,\n      ?   dateCreated?: DateTimeFilter | DateTime,\n      ?   dateUpdated?: DateTimeFilter | DateTime,\n      ?   organization?: OrganizationRelationFilter | OrganizationWhereInput,\n      ?   patient?: PatientRelationFilter | PatientWhereInput\n        },\n        select: {\n          orderDate: true,\n          completedAt: true\n        }\n      })\n\nUnknown argument `completedAt`. Available options are marked with ?."}]}
+
+[0;34m=== 9. Radiology Module Tests ===[0m
+[0;31m✗ Failed to order radiology test[0m
+Testing: List Radiology Tests... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.radiologyTest.findMany()` invocation in\n/root/hospital-backend/routes/radiology.js:88:28\n\n  85 \n  86 const skip = (parseInt(page) - 1) * parseInt(limit);\n  87 const [tests, total] = await Promise.all([\n→ 88   prisma.radiologyTest.findMany({\n         where: {\n           orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\"\n         },\n         include: {\n           patient: {\n             select: {\n               id: true,\n               name: true,\n               patientCode: true,\n               age: true,\n               gender: true\n             }\n           },\n           orderedByDoctor: {\n           ~~~~~~~~~~~~~~~\n             select: {\n               id: true,\n               firstName: true,\n               lastName: true\n             }\n           },\n           images: true,\n       ?   organization?: true\n         },\n         skip: 0,\n         take: 20,\n         orderBy: {\n           orderDate: \"desc\"\n         }\n       })\n\nUnknown field `orderedByDoctor` for include statement on model `RadiologyTest`. Available options are marked with ?."}]}
+Testing: Get Radiology Statistics... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.radiologyTest.groupBy()` invocation in\n/root/hospital-backend/routes/radiology.js:754:58\n\n  751 }\n  752 \n  753 // Get modality breakdown\n→ 754 const modalityBreakdown = await prisma.radiologyTest.groupBy({\n        select: {\n          _count: {\n            select: {\n              _all: true\n            }\n          },\n          modality: true\n        },\n        by: [\n          \"modality\"\n        ],\n        ~~~~~~~~~~~~\n        where: {\n          orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\"\n        }\n      })\n\nInvalid value for argument `by`. Expected RadiologyTestScalarFieldEnum."}]}
+
+[0;34m=== 10. Pharmacy Module Tests ===[0m
+[0;31m✗ Failed to create medicine[0m
+Testing: List Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+[0;31m✗ Failed to create prescription[0m
+Testing: List Prescriptions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Pharmacy Statistics... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"prisma.raw is not a function"}]}
+Testing: Get Low Stock Medicines... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.inventoryItem.findFirst()` invocation in\n/root/hospital-backend/routes/pharmacy.js:145:49\n\n  142 const orgId = getUserOrgId(req);\n  143 const { id } = req.params;\n  144 \n→ 145 const medicine = await prisma.inventoryItem.findFirst({\n        where: {\n          id: \"low-stock\",\n          orgId: \"cda4ff6b-f027-4ab5-80f1-0779faef3008\"\n        },\n        include: {\n          prescriptionItems: {\n            take: 10,\n            orderBy: {\n              createdAt: \"desc\",\n              ~~~~~~~~~\n      ?       id?: SortOrder,\n      ?       prescriptionId?: SortOrder,\n      ?       medicineId?: SortOrder,\n      ?       quantity?: SortOrder,\n      ?       dosage?: SortOrder | SortOrderInput,\n      ?       frequency?: SortOrder | SortOrderInput,\n      ?       duration?: SortOrder | SortOrderInput,\n      ?       instructions?: SortOrder | SortOrderInput,\n      ?       dateCreated?: SortOrder,\n      ?       prescription?: PrescriptionOrderByWithRelationInput,\n      ?       medicine?: InventoryItemOrderByWithRelationInput\n            }\n          }\n        }\n      })\n\nUnknown argument `createdAt`. Available options are marked with ?."}]}
+
+[0;34m=== 11. Subscription Plans Tests ===[0m
+Testing: List Subscription Plans... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Subscription Plan... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"error":"\nInvalid `prisma.subscriptionPlan.create()` invocation in\n/root/hospital-backend/server.js:202:48\n\n  199 // POST create subscription plan\n  200 app.post('/api/subscription-plans', async (req, res) => {\n  201   try {\n→ 202     const plan = await prisma.subscriptionPlan.create({\n            data: {\n              name: \"Basic Plan\",\n              description: \"Basic features\",\n              monthlyPrice: 99,\n              yearlyPrice: 990,\n              maxUsers: 10,\n              status: \"active\",\n          +   price: Decimal\n            }\n          })\n\nArgument `price` is missing."}
+
+[0;34m=== 12. Promotions Tests ===[0m
+Testing: List Promotions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Promotion... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"error":"\nInvalid `prisma.promotion.create()` invocation in\n/root/hospital-backend/server.js:321:46\n\n  318 // POST create promotion\n  319 app.post('/api/promotions', async (req, res) => {\n  320   try {\n→ 321     const promotion = await prisma.promotion.create({\n            data: {\n              code: \"WINTER2025\",\n              description: \"Winter discount\",\n              discountType: \"percentage\",\n              discountValue: 20,\n              startDate: \"2025-12-01\",\n                         ~~~~~~~~~~~~\n              endDate: \"2025-12-31\",\n              isActive: true\n            }\n          })\n\nInvalid value for argument `startDate`: premature end of input. Expected ISO-8601 DateTime."}
+
+[0;34m=== 13. Dashboard Statistics Tests ===[0m
+Testing: Get Dashboard Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+========================================
+TEST SUMMARY
+========================================
+Total Tests: 53
+[0;32mPassed: 21[0m
+[0;31mFailed: 32[0m
+[1;33m⚠ Some tests failed[0m
+Success Rate: 39%
+Completed: Tue Dec  2 05:52:43 PM UTC 2025
+========================================
+
+Test results saved to: /root/hospital-backend/test-results
+Test log: /root/hospital-backend/test-results/test_log_20251202_175238.txt

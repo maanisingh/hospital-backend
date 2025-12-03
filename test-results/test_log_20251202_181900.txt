@@ -1,0 +1,189 @@
+========================================
+Hospital SaaS Backend - Comprehensive Testing
+Started: Tue Dec  2 06:19:00 PM UTC 2025
+API URL: https://hospital-api.alexandratechlab.com
+========================================
+
+[0;34m=== 1. Authentication Module Tests ===[0m
+Testing: Health Check... [0;32m✓ PASSED[0m (HTTP 200)
+Logging in to get access token...
+[0;32m✓ Successfully obtained access token[0m
+Testing: Invalid Login... [0;32m✓ PASSED[0m (HTTP 401)
+Testing: Get Current User... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Unauthorized Access... [0;32m✓ PASSED[0m (HTTP 403)
+
+[0;34m=== 2. Organization Module Tests ===[0m
+Testing: List Organizations... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Organization created with ID: 00b37f31-a29b-49d5-864f-e2384d30ac1f[0m
+Testing: Get Organization by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Organization... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Organization Stats... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 3. Patient Management Tests ===[0m
+[0;31m✗ Failed to create patient[0m
+Testing: List Patients... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by Code... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.patient.findFirst()` invocation in\n/root/hospital-backend/routes/patients.js:249:42\n\n  246 try {\n  247   const orgId = await getUserOrgId(req);\n  248 \n→ 249   const patient = await prisma.patient.findFirst(\nInconsistent column data: Error creating UUID, invalid character: expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-], found `o` at 2"}]}
+Testing: Update Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot PATCH /api/patients/</pre>
+</body>
+</html>
+Testing: Get Patient History... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/patients//history</pre>
+</body>
+</html>
+
+[0;34m=== 4. Department & Bed Management Tests ===[0m
+[0;31m✗ Failed to create department[0m
+Testing: List Departments... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+[0;31m✗ Failed to create bed[0m
+Testing: Get Available Beds... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+Testing: Assign Bed to Patient... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/departments/beds//assign</pre>
+</body>
+</html>
+
+[0;34m=== 5. OPD Module Tests ===[0m
+[0;31m✗ Failed to create OPD token[0m
+Testing: List OPD Tokens... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Queue Status... [0;31m✗ FAILED[0m (Expected: 200, Got: 400)
+Response: {"errors":[{"message":"Either departmentId or doctorId is required"}]}
+Testing: Call Next Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//call</pre>
+</body>
+</html>
+Testing: Complete Consultation... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//complete</pre>
+</body>
+</html>
+Testing: Get OPD Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 6. Appointments Module Tests ===[0m
+[0;31m✗ Failed to create appointment[0m
+Testing: List Appointments... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Confirm Appointment... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/appointments//confirm</pre>
+</body>
+</html>
+Testing: Get Appointment Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 7. Billing Module Tests ===[0m
+[0;31m✗ Failed to create invoice[0m
+Testing: List Invoices... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Payment... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"errors":[{"message":"Invoice ID is required"}]}
+Testing: Get Patient Outstanding... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/billing/patients//outstanding</pre>
+</body>
+</html>
+Testing: Get Billing Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 8. Lab Module Tests ===[0m
+[0;31m✗ Failed to order lab test[0m
+Testing: List Lab Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Collect Lab Sample... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/lab/tests//samples</pre>
+</body>
+</html>
+Testing: Get Lab Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 9. Radiology Module Tests ===[0m
+[0;31m✗ Failed to order radiology test[0m
+Testing: List Radiology Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Radiology Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 10. Pharmacy Module Tests ===[0m
+[0;31m✗ Failed to create medicine[0m
+Testing: List Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+[0;31m✗ Failed to create prescription[0m
+Testing: List Prescriptions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Pharmacy Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Low Stock Medicines... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.inventoryItem.findFirst()` invocation in\n/root/hospital-backend/routes/pharmacy.js:148:49\n\n  145 const orgId = getUserOrgId(req);\n  146 const { id } = req.params;\n  147 \n→ 148 const medicine = await prisma.inventoryItem.findFirst(\nInconsistent column data: Error creating UUID, invalid character: expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-], found `l` at 1"}]}
+
+[0;34m=== 11. Subscription Plans Tests ===[0m
+Testing: List Subscription Plans... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Subscription Plan... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"error":"\nInvalid `prisma.subscriptionPlan.create()` invocation in\n/root/hospital-backend/server.js:202:48\n\n  199 // POST create subscription plan\n  200 app.post('/api/subscription-plans', async (req, res) => {\n  201   try {\n→ 202     const plan = await prisma.subscriptionPlan.create({\n            data: {\n              name: \"Basic Plan\",\n              description: \"Basic features\",\n              monthlyPrice: 99,\n              yearlyPrice: 990,\n              maxUsers: 10,\n              status: \"active\",\n          +   price: Decimal\n            }\n          })\n\nArgument `price` is missing."}
+
+[0;34m=== 12. Promotions Tests ===[0m
+Testing: List Promotions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Promotion... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"error":"\nInvalid `prisma.promotion.create()` invocation in\n/root/hospital-backend/server.js:321:46\n\n  318 // POST create promotion\n  319 app.post('/api/promotions', async (req, res) => {\n  320   try {\n→ 321     const promotion = await prisma.promotion.create({\n            data: {\n              code: \"WINTER2025\",\n              description: \"Winter discount\",\n              discountType: \"percentage\",\n              discountValue: 20,\n              startDate: \"2025-12-01\",\n                         ~~~~~~~~~~~~\n              endDate: \"2025-12-31\",\n              isActive: true\n            }\n          })\n\nInvalid value for argument `startDate`: premature end of input. Expected ISO-8601 DateTime."}
+
+[0;34m=== 13. Dashboard Statistics Tests ===[0m
+Testing: Get Dashboard Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+========================================
+TEST SUMMARY
+========================================
+Total Tests: 53
+[0;32mPassed: 27[0m
+[0;31mFailed: 26[0m
+[1;33m⚠ Some tests failed[0m
+Success Rate: 50%
+Completed: Tue Dec  2 06:19:06 PM UTC 2025
+========================================
+
+Test results saved to: /root/hospital-backend/test-results
+Test log: /root/hospital-backend/test-results/test_log_20251202_181900.txt
+Test summary: /root/hospital-backend/test-results/test_summary_20251202_181900.json

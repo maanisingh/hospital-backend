@@ -1,0 +1,114 @@
+========================================
+Hospital SaaS Backend - Comprehensive Testing
+Started: Tue Dec  2 08:44:25 PM UTC 2025
+API URL: https://hospital-api.alexandratechlab.com
+========================================
+
+[0;34m=== 1. Authentication Module Tests ===[0m
+Testing: Health Check... [0;32m✓ PASSED[0m (HTTP 200)
+Logging in to get access token...
+[0;32m✓ Successfully obtained access token[0m
+Testing: Invalid Login... [0;32m✓ PASSED[0m (HTTP 401)
+Testing: Get Current User... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Unauthorized Access... [0;32m✓ PASSED[0m (HTTP 403)
+
+[0;34m=== 2. Organization Module Tests ===[0m
+Testing: List Organizations... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Organization created with ID: 1838605a-d6cd-440f-a914-ff9c07f5b6c8[0m
+Testing: Get Organization by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Organization... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Organization Stats... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 3. Patient Management Tests ===[0m
+[0;32m✓ Patient created with ID: 43133a27-639f-4941-8bc2-a165b7713a64, Code: PAT001[0m
+Testing: List Patients... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by Code... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Patient... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient History... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 4. Department & Bed Management Tests ===[0m
+[0;32m✓ Department created with ID: 360301c9-5172-4af1-bd2e-a4ae91d683fe[0m
+Testing: List Departments... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Bed created with ID: 609face4-ee09-401e-a358-5a8da91820be[0m
+Testing: Get Available Beds... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Assign Bed to Patient... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 5. OPD Module Tests ===[0m
+[0;32m✓ OPD Token created with ID: fcff86b7-e3aa-4992-a5de-2f041ebea86c[0m
+Testing: List OPD Tokens... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Queue Status... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Call Next Patient... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Complete Consultation... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 6. Appointments Module Tests ===[0m
+[0;32m✓ Appointment created with ID: da9a5420-4097-4e66-80e8-8b146dadf91b[0m
+Testing: List Appointments... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Confirm Appointment... [0;31m✗ FAILED[0m (Expected: 200, Got: 500)
+Response: {"errors":[{"message":"\nInvalid `prisma.appointment.update()` invocation in\n/root/hospital-backend/routes/appointments.js:411:57\n\n  408   });\n  409 }\n  410 \n→ 411 const updatedAppointment = await prisma.appointment.update({\n        where: {\n          id: \"da9a5420-4097-4e66-80e8-8b146dadf91b\"\n        },\n        data: {\n          status: \"confirmed\",\n          confirmedAt: new Date(\"2025-12-02T20:44:29.577Z\"),\n          ~~~~~~~~~~~\n      ?   id?: String | StringFieldUpdateOperationsInput,\n      ?   appointmentDate?: DateTime | DateTimeFieldUpdateOperationsInput,\n      ?   appointmentTime?: String | StringFieldUpdateOperationsInput,\n      ?   appointmentType?: String | StringFieldUpdateOperationsInput,\n      ?   reason?: String | NullableStringFieldUpdateOperationsInput | Null,\n      ?   notes?: String | NullableStringFieldUpdateOperationsInput | Null,\n      ?   dateCreated?: DateTime | DateTimeFieldUpdateOperationsInput,\n      ?   dateUpdated?: DateTime | DateTimeFieldUpdateOperationsInput,\n      ?   organization?: OrganizationUpdateOneRequiredWithoutAppointmentsNestedInput,\n      ?   patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput,\n      ?   doctor?: UserUpdateOneWithoutAppointmentsNestedInput\n        },\n        include: {\n          patient: true,\n          doctor: {\n            select: {\n              id: true,\n              firstName: true,\n              lastName: true,\n              email: true\n            }\n          }\n        }\n      })\n\nUnknown argument `confirmedAt`. Available options are marked with ?."}]}
+Testing: Get Appointment Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 7. Billing Module Tests ===[0m
+[0;31m✗ Failed to create invoice[0m
+Testing: List Invoices... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Payment... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"errors":[{"message":"Invoice ID is required"}]}
+Testing: Get Patient Outstanding... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Billing Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 8. Lab Module Tests ===[0m
+[0;31m✗ Failed to order lab test[0m
+Testing: List Lab Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Collect Lab Sample... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/lab/tests//samples</pre>
+</body>
+</html>
+Testing: Get Lab Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 9. Radiology Module Tests ===[0m
+[0;31m✗ Failed to order radiology test[0m
+Testing: List Radiology Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Radiology Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 10. Pharmacy Module Tests ===[0m
+[0;31m✗ Failed to create medicine[0m
+Testing: List Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+[0;31m✗ Failed to create prescription[0m
+Testing: List Prescriptions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Pharmacy Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Low Stock Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 11. Subscription Plans Tests ===[0m
+Testing: List Subscription Plans... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Subscription Plan... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 12. Promotions Tests ===[0m
+Testing: List Promotions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Promotion... [0;31m✗ FAILED[0m (Expected: 201, Got: 400)
+Response: {"error":"\nInvalid `prisma.promotion.create()` invocation in\n/root/hospital-backend/server.js:341:46\n\n  338   data.endDate = new Date(data.endDate + 'T23:59:59.999Z').toISOString();\n  339 }\n  340 \n→ 341 const promotion = await prisma.promotion.create(\nUnique constraint failed on the fields: (`code`)"}
+
+[0;34m=== 13. Dashboard Statistics Tests ===[0m
+Testing: Get Dashboard Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+========================================
+TEST SUMMARY
+========================================
+Total Tests: 53
+[0;32mPassed: 44[0m
+[0;31mFailed: 9[0m
+[1;33m⚠ Some tests failed[0m
+Success Rate: 83%
+Completed: Tue Dec  2 08:44:32 PM UTC 2025
+========================================
+
+Test results saved to: /root/hospital-backend/test-results
+Test log: /root/hospital-backend/test-results/test_log_20251202_204425.txt
+Test summary: /root/hospital-backend/test-results/test_summary_20251202_204425.json

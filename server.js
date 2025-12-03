@@ -574,6 +574,12 @@ app.use('/api/radiology', radiologyRoutes);
 const pharmacyRoutes = require('./routes/pharmacy');
 app.use('/api/pharmacy', pharmacyRoutes);
 
+// ============== USER MANAGEMENT API ==============
+
+// Import user management routes
+const userRoutes = require('./routes/users');
+app.use('/api/users', userRoutes);
+
 // ============== STATS/ANALYTICS ENDPOINTS ==============
 
 // GET dashboard stats

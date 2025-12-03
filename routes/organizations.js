@@ -73,6 +73,12 @@ const authenticateToken = (req, res, next) => {
   }
 
   const jwt = require('jsonwebtoken');
+const {
+  requirePermission,
+  requireAdmin,
+  requireSuperAdmin,
+  enforceOrgScope
+} = require('../middleware/rbac');
   const JWT_SECRET = process.env.JWT_SECRET || 'hospital-saas-jwt-secret-2024';
 
   jwt.verify(token, JWT_SECRET, (err, user) => {

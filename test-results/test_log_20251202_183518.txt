@@ -1,0 +1,155 @@
+========================================
+Hospital SaaS Backend - Comprehensive Testing
+Started: Tue Dec  2 06:35:18 PM UTC 2025
+API URL: https://hospital-api.alexandratechlab.com
+========================================
+
+[0;34m=== 1. Authentication Module Tests ===[0m
+Testing: Health Check... [0;32m✓ PASSED[0m (HTTP 200)
+Logging in to get access token...
+[0;32m✓ Successfully obtained access token[0m
+Testing: Invalid Login... [0;32m✓ PASSED[0m (HTTP 401)
+Testing: Get Current User... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Unauthorized Access... [0;32m✓ PASSED[0m (HTTP 403)
+
+[0;34m=== 2. Organization Module Tests ===[0m
+Testing: List Organizations... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Organization created with ID: 6b180892-34d7-4217-85f9-472a27722c96[0m
+Testing: Get Organization by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Organization... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Organization Stats... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 3. Patient Management Tests ===[0m
+[0;32m✓ Patient created with ID: 938f94af-0931-4796-92d9-ea45ebcffdc5, Code: PAT001[0m
+Testing: List Patients... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by Code... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: {"errors":[{"message":"Patient not found"}]}
+Testing: Get Patient History... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 4. Department & Bed Management Tests ===[0m
+[0;31m✗ Failed to create department[0m
+Testing: List Departments... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+[0;31m✗ Failed to create bed[0m
+Testing: Get Available Beds... [0;31m✗ FAILED[0m (Expected: 200, Got: 403)
+Response: {"errors":[{"message":"Invalid or expired token"}]}
+Testing: Assign Bed to Patient... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/departments/beds//assign</pre>
+</body>
+</html>
+
+[0;34m=== 5. OPD Module Tests ===[0m
+[0;31m✗ Failed to create OPD token[0m
+Testing: List OPD Tokens... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Queue Status... [0;31m✗ FAILED[0m (Expected: 200, Got: 400)
+Response: {"errors":[{"message":"Either departmentId or doctorId is required"}]}
+Testing: Call Next Patient... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//call</pre>
+</body>
+</html>
+Testing: Complete Consultation... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/opd/tokens//complete</pre>
+</body>
+</html>
+Testing: Get OPD Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 6. Appointments Module Tests ===[0m
+[0;31m✗ Failed to create appointment[0m
+Testing: List Appointments... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Confirm Appointment... [0;31m✗ FAILED[0m (Expected: 200, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/appointments//confirm</pre>
+</body>
+</html>
+Testing: Get Appointment Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 7. Billing Module Tests ===[0m
+[0;32m✓ Invoice created with ID: f7431500-b945-42e6-b920-6e1c78a5453d[0m
+Testing: List Invoices... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Payment... [0;32m✓ PASSED[0m (HTTP 201)
+Testing: Get Patient Outstanding... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Billing Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 8. Lab Module Tests ===[0m
+[0;31m✗ Failed to order lab test[0m
+Testing: List Lab Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Collect Lab Sample... [0;31m✗ FAILED[0m (Expected: 201, Got: 404)
+Response: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /api/lab/tests//samples</pre>
+</body>
+</html>
+Testing: Get Lab Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 9. Radiology Module Tests ===[0m
+[0;31m✗ Failed to order radiology test[0m
+Testing: List Radiology Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Radiology Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 10. Pharmacy Module Tests ===[0m
+[0;31m✗ Failed to create medicine[0m
+Testing: List Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+[0;31m✗ Failed to create prescription[0m
+Testing: List Prescriptions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Pharmacy Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Low Stock Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 11. Subscription Plans Tests ===[0m
+Testing: List Subscription Plans... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Subscription Plan... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 12. Promotions Tests ===[0m
+Testing: List Promotions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Promotion... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 13. Dashboard Statistics Tests ===[0m
+Testing: Get Dashboard Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+========================================
+TEST SUMMARY
+========================================
+Total Tests: 53
+[0;32mPassed: 36[0m
+[0;31mFailed: 17[0m
+[1;33m⚠ Some tests failed[0m
+Success Rate: 67%
+Completed: Tue Dec  2 06:35:24 PM UTC 2025
+========================================
+
+Test results saved to: /root/hospital-backend/test-results
+Test log: /root/hospital-backend/test-results/test_log_20251202_183518.txt
+Test summary: /root/hospital-backend/test-results/test_summary_20251202_183518.json

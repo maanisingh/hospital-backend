@@ -1,0 +1,101 @@
+========================================
+Hospital SaaS Backend - Comprehensive Testing
+Started: Wed Dec  3 04:59:29 PM UTC 2025
+API URL: https://hospital-api.alexandratechlab.com
+========================================
+
+[0;34m=== 1. Authentication Module Tests ===[0m
+Testing: Health Check... [0;32m✓ PASSED[0m (HTTP 200)
+Logging in to get access token...
+[0;32m✓ Successfully obtained access token[0m
+Testing: Invalid Login... [0;32m✓ PASSED[0m (HTTP 401)
+Testing: Get Current User... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Unauthorized Access... [0;32m✓ PASSED[0m (HTTP 403)
+
+[0;34m=== 2. Organization Module Tests ===[0m
+Testing: List Organizations... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Organization created with ID: 98e9b9d5-d85a-4121-a1b7-56f9ea048834[0m
+Testing: Get Organization by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Organization... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Organization Stats... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 3. Patient Management Tests ===[0m
+[0;32m✓ Patient created with ID: 14f56fb3-08b9-4df6-a767-79552bc2b913, Code: PAT001[0m
+Testing: List Patients... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by ID... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient by Code... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Update Patient... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Patient History... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 4. Department & Bed Management Tests ===[0m
+[0;32m✓ Department created with ID: a74ce636-b364-4c30-bdd1-cb5a125ffbf0[0m
+Testing: List Departments... [0;32m✓ PASSED[0m (HTTP 200)
+[0;32m✓ Bed created with ID: 88589f7c-a5bd-4de5-8c78-a8f16ad68940[0m
+Testing: Get Available Beds... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Assign Bed to Patient... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 5. OPD Module Tests ===[0m
+[0;32m✓ OPD Token created with ID: 00fe70b6-d008-4855-b4d7-91be30c2e620[0m
+Testing: List OPD Tokens... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Queue Status... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Call Next Patient... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Complete Consultation... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get OPD Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 6. Appointments Module Tests ===[0m
+[0;32m✓ Appointment created with ID: 6e373c68-fa3d-46d9-8d56-fc7cb5a045ba[0m
+Testing: List Appointments... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Confirm Appointment... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Appointment Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 7. Billing Module Tests ===[0m
+[0;32m✓ Invoice created with ID: 97a71bbf-e5e7-4537-8560-6dd565946460[0m
+Testing: List Invoices... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Payment... [0;32m✓ PASSED[0m (HTTP 201)
+Testing: Get Patient Outstanding... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Billing Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 8. Lab Module Tests ===[0m
+[0;32m✓ Lab Test ordered with ID: 3255c48e-e6f7-4dff-82cf-ff056f31c4ed[0m
+Testing: List Lab Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Collect Lab Sample... [0;32m✓ PASSED[0m (HTTP 201)
+Testing: Get Lab Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 9. Radiology Module Tests ===[0m
+[0;32m✓ Radiology Test ordered with ID: cfcd21c8-f881-4cca-8b01-b369f8753565[0m
+Testing: List Radiology Tests... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Radiology Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 10. Pharmacy Module Tests ===[0m
+[0;32m✓ Medicine created with ID: ed6b0e9e-f1b9-4817-bd5d-343f0cbdd814[0m
+Testing: List Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+[0;31m✗ Failed to create prescription[0m
+Testing: List Prescriptions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Pharmacy Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Get Low Stock Medicines... [0;32m✓ PASSED[0m (HTTP 200)
+
+[0;34m=== 11. Subscription Plans Tests ===[0m
+Testing: List Subscription Plans... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Subscription Plan... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 12. Promotions Tests ===[0m
+Testing: List Promotions... [0;32m✓ PASSED[0m (HTTP 200)
+Testing: Create Promotion... [0;32m✓ PASSED[0m (HTTP 201)
+
+[0;34m=== 13. Dashboard Statistics Tests ===[0m
+Testing: Get Dashboard Statistics... [0;32m✓ PASSED[0m (HTTP 200)
+
+========================================
+TEST SUMMARY
+========================================
+Total Tests: 53
+[0;32mPassed: 52[0m
+[0;31mFailed: 1[0m
+[1;33m⚠ Some tests failed[0m
+Success Rate: 98%
+Completed: Wed Dec  3 04:59:34 PM UTC 2025
+========================================
+
+Test results saved to: /root/hospital-backend/test-results
+Test log: /root/hospital-backend/test-results/test_log_20251203_165929.txt
+Test summary: /root/hospital-backend/test-results/test_summary_20251203_165929.json
