@@ -920,32 +920,66 @@ app.use('/api/pharmacy', pharmacyRoutes);
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
+// ============== STAFF MANAGEMENT API ==============
+
+// Import staff routes
+const staffRoutes = require('./routes/staff');
+app.use('/api/staff', staffRoutes);
+
+// ============== BED MANAGEMENT API ==============
+
+// Import bed routes
+const bedRoutes = require('./routes/beds');
+app.use('/api/beds', bedRoutes);
+
+// ============== DASHBOARD API (ROLE-BASED) ==============
+
+// Import dashboard routes
+const dashboardRoutes = require('./routes/dashboard');
+app.use('/api/dashboard', dashboardRoutes);
+
 // ============== STATS/ANALYTICS ENDPOINTS ==============
 
-// GET dashboard stats
-app.get('/api/stats/dashboard', async (req, res) => {
+// GET dashboard stats - role-aware endpoint that redirects to appropriate dashboard
+app.get('/api/stats/dashboard', authenticateToken, async (req, res) => {
   try {
-    const [totalPlans, activePlans, totalPromotions, activePromotions, totalPayments] = await Promise.all([
-      prisma.subscriptionPlan.count(),
-      prisma.subscriptionPlan.count({ where: { status: 'active' } }),
-      prisma.promotion.count(),
-      prisma.promotion.count({ where: { isActive: true } }),
-      prisma.paymentHistory.count()
-    ]);
+    const userRole = req.user.role;
+    const { orgId } = req.query;
 
-    const totalRevenue = await prisma.paymentHistory.aggregate({
-      where: { status: 'completed' },
-      _sum: { amount: true }
-    });
+    // Route to appropriate dashboard based on role
+    const dashboardMap = {
+      'SuperAdmin': '/api/dashboard/superadmin',
+      'HospitalAdmin': '/api/dashboard/hospital-admin',
+      'Doctor': '/api/dashboard/doctor',
+      'Nurse': '/api/dashboard/nurse',
+      'Receptionist': '/api/dashboard/receptionist',
+      'Pharmacist': '/api/dashboard/pharmacist',
+      'LabTechnician': '/api/dashboard/lab-technician',
+      'Radiologist': '/api/dashboard/radiologist',
+      'Billing': '/api/dashboard/billing'
+    };
 
-    res.json({
-      data: {
-        subscriptionPlans: { total: totalPlans, active: activePlans },
-        promotions: { total: totalPromotions, active: activePromotions },
-        payments: { total: totalPayments },
-        revenue: { total: totalRevenue._sum.amount || 0 }
-      }
-    });
+    const dashboardPath = dashboardMap[userRole];
+
+    if (!dashboardPath) {
+      return res.status(403).json({
+        errors: [{ message: 'Dashboard not available for your role' }]
+      });
+    }
+
+    // For SuperAdmin, no orgId required
+    if (userRole === 'SuperAdmin') {
+      return res.redirect(dashboardPath);
+    }
+
+    // For other roles, orgId is required
+    if (!orgId) {
+      return res.status(400).json({
+        errors: [{ message: 'Organization ID is required' }]
+      });
+    }
+
+    res.redirect(`${dashboardPath}?orgId=${orgId}`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
