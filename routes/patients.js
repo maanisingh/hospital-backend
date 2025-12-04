@@ -642,4 +642,182 @@ router.get('/:id/history', authenticateToken, requirePermission('PATIENT_ACCESS'
   }
 });
 
+/**
+ * GET /api/patients/:id/dashboard
+ * Get patient's dashboard with all their records
+ * - Patient info
+ * - All OPD tokens with status
+ * - All appointments
+ * - All lab tests
+ * - All radiology tests
+ * - All pharmacy orders
+ * - All bills
+ * - Summary statistics
+ * PUBLIC ACCESS - Can be accessed by patient themselves with mobile verification
+ */
+router.get('/:id/dashboard', authenticateToken, async (req, res) => {
+  try {
+    const orgId = await getUserOrgId(req);
+    const { patientId } = req.params;
+
+    // Get complete patient data with all records
+    const patient = await prisma.patient.findFirst({
+      where: {
+        id: req.params.id,
+        orgId
+      },
+      include: {
+        organization: {
+          select: {
+            name: true,
+            code: true,
+            address: true,
+            phone: true,
+            email: true
+          }
+        }
+      }
+    });
+
+    if (!patient) {
+      return res.status(404).json({
+        errors: [{ message: 'Patient not found' }]
+      });
+    }
+
+    // Get all OPD tokens
+    const opdTokens = await prisma.oPDToken.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      include: {
+        doctor: {
+          select: { firstName: true, lastName: true, email: true }
+        },
+        department: {
+          select: { name: true, code: true }
+        }
+      },
+      orderBy: { tokenDate: 'desc' }
+    });
+
+    // Get all appointments
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      include: {
+        doctor: {
+          select: { firstName: true, lastName: true }
+        }
+      },
+      orderBy: { appointmentDate: 'desc' }
+    });
+
+    // Get all lab tests
+    const labTests = await prisma.labTest.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      orderBy: { orderDate: 'desc' }
+    });
+
+    // Get all radiology tests
+    const radiologyTests = await prisma.radiologyTest.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      orderBy: { orderDate: 'desc' }
+    });
+
+    // Get all pharmacy orders
+    const pharmacyOrders = await prisma.pharmacyOrder.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      orderBy: { orderDate: 'desc' }
+    });
+
+    // Get all bills
+    const bills = await prisma.bill.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      orderBy: { dateCreated: 'desc' }
+    });
+
+    // Get IPD admissions
+    const ipdAdmissions = await prisma.iPDAdmission.findMany({
+      where: {
+        patientId: req.params.id,
+        orgId
+      },
+      include: {
+        doctor: {
+          select: { firstName: true, lastName: true }
+        },
+        department: {
+          select: { name: true }
+        },
+        bed: {
+          select: { bedNumber: true, bedType: true }
+        }
+      },
+      orderBy: { admissionDate: 'desc' }
+    });
+
+    // Calculate summary statistics
+    const totalBillAmount = bills.reduce((sum, bill) => sum + (bill.totalAmount || 0), 0);
+    const totalPaidAmount = bills.reduce((sum, bill) => sum + (bill.paidAmount || 0), 0);
+    const pendingAmount = totalBillAmount - totalPaidAmount;
+
+    const summary = {
+      totalVisits: opdTokens.length,
+      totalAppointments: appointments.length,
+      upcomingAppointments: appointments.filter(a =>
+        new Date(a.appointmentDate) > new Date() && a.status === 'scheduled'
+      ).length,
+      pendingTokens: opdTokens.filter(t => t.status === 'waiting' || t.status === 'in_consultation').length,
+      completedTokens: opdTokens.filter(t => t.status === 'completed').length,
+      totalLabTests: labTests.length,
+      pendingLabTests: labTests.filter(t => t.status === 'pending' || t.status === 'in_progress').length,
+      completedLabTests: labTests.filter(t => t.status === 'completed').length,
+      totalRadiologyTests: radiologyTests.length,
+      pendingRadiologyTests: radiologyTests.filter(t => t.status === 'pending' || t.status === 'in_progress').length,
+      totalPharmacyOrders: pharmacyOrders.length,
+      totalAdmissions: ipdAdmissions.length,
+      activeAdmissions: ipdAdmissions.filter(a => a.status === 'admitted').length,
+      totalBills: bills.length,
+      totalBillAmount,
+      totalPaidAmount,
+      pendingAmount
+    };
+
+    res.json({
+      data: {
+        patient,
+        opdTokens,
+        appointments,
+        labTests,
+        radiologyTests,
+        pharmacyOrders,
+        bills,
+        ipdAdmissions,
+        summary
+      }
+    });
+  } catch (error) {
+    console.error('Get patient dashboard error:', error);
+    res.status(500).json({
+      errors: [{ message: error.message || 'Failed to get patient dashboard' }]
+    });
+  }
+});
+
 module.exports = router;
