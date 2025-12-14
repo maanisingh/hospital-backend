@@ -137,6 +137,13 @@ async function main() {
       lastName: 'Garcia',
       role: 'Physiotherapist',
       orgId: demoOrg.id
+    },
+    {
+      email: 'patient@hospital.com',
+      firstName: 'John',
+      lastName: 'Patient',
+      role: 'Patient',
+      orgId: demoOrg.id
     }
   ];
 
